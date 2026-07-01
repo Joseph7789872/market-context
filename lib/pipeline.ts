@@ -30,20 +30,24 @@ export function buildSummary(article: NewsArticle): string {
   return `${article.companyName} has a ${article.eventType.toLowerCase()} event from a ${basis}. Traders should compare the trusted source with price reaction and high-signal X context before treating the discussion as market fact.`;
 }
 
+const clusterBoosts: Record<NonNullable<XPost["authorCluster"]>, number> = {
+  company: 0.3,
+  executive: 0.28,
+  journalist: 0.24,
+  analyst: 0.24,
+  investor: 0.2,
+  "sector-specialist": 0.2,
+  retail: -0.18
+};
+
 export function scorePost(post: XPost, article: NewsArticle): EventXMatch {
   const text = post.text.toLowerCase();
   const keywords = buildEventKeywords(article).map((word) => word.toLowerCase());
   const keywordHits = keywords.filter((word) => text.includes(word.replace("$", ""))).length;
   const eventSpecificity = Math.min(keywordHits / Math.max(keywords.length, 1), 1);
-  const clusterBoost = {
-    company: 0.3,
-    executive: 0.28,
-    journalist: 0.24,
-    analyst: 0.24,
-    investor: 0.2,
-    "sector-specialist": 0.2,
-    retail: -0.18
-  }[post.authorCluster];
+  // Known cluster (hand-curated demo data) uses the full boost table; real
+  // scraped posts have no cluster signal, so they rely on verified+engagement only.
+  const clusterBoost = post.authorCluster ? clusterBoosts[post.authorCluster] : 0;
   const engagementBoost = Math.min(Math.log10(post.engagement + 1) / 10, 0.45);
   const credibilityScore = Math.max(
     0,

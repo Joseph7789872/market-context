@@ -47,7 +47,7 @@ function mapEvent(event: RawEvent): EventCard {
         postedAt: match.post.postedAt.toISOString(),
         engagement: match.post.engagement,
         verifiedStatus: match.post.verifiedStatus,
-        authorCluster: match.post.authorCluster as XPost["authorCluster"]
+        authorCluster: (match.post.authorCluster as XPost["authorCluster"]) ?? undefined
       }
     }))
     .sort((a, b) => b.relevanceScore + b.credibilityScore - (a.relevanceScore + a.credibilityScore));

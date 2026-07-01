@@ -67,7 +67,8 @@ export default async function EventDetail({ params }: { params: Promise<{ id: st
                     <a className="x-post" href={match.post.url} target="_blank" rel="noreferrer" key={match.xPostId}>
                       <div className="post-meta">
                         <span>
-                          @{match.post.authorHandle} · {match.post.authorCluster}
+                          @{match.post.authorHandle}
+                          {match.post.authorCluster ? ` · ${match.post.authorCluster}` : ""}
                         </span>
                         <span className="pill">{match.sentiment}</span>
                       </div>

@@ -63,7 +63,8 @@ export function EventCard({ event }: { event: EventCardType }) {
           <div className="x-post" key={match.xPostId}>
             <div className="post-meta">
               <span>
-                @{match.post.authorHandle} · {match.post.authorCluster}
+                @{match.post.authorHandle}
+                {match.post.authorCluster ? ` · ${match.post.authorCluster}` : ""}
               </span>
               <span className="pill">{match.sentiment}</span>
             </div>

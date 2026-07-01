@@ -64,7 +64,7 @@ model XPost {
   postedAt       DateTime
   engagement     Int
   verifiedStatus Boolean
-  authorCluster  String
+  authorCluster  String?
   eventMatches   EventXMatch[]
 
   @@index([postedAt])

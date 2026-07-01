@@ -59,7 +59,10 @@ export type XPost = {
   postedAt: string;
   engagement: number;
   verifiedStatus: boolean;
-  authorCluster:
+  // Only set for hand-curated demo/seed data. Real scraped posts have no
+  // reliable way to determine profession/role, so this stays undefined and
+  // scorePost() falls back to a verified+engagement-only formula.
+  authorCluster?:
     | "company"
     | "executive"
     | "journalist"
