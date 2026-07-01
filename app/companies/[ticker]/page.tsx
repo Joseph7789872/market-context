@@ -4,6 +4,7 @@ import { AuthStatus } from "@/components/auth-status";
 import { EventCard } from "@/components/event-card";
 import { Icons } from "@/components/icons";
 import { Topbar } from "@/components/topbar";
+import { WatchButton } from "@/components/watch-button";
 import { getCurrentUser } from "@/lib/auth";
 import { getCompanyByTicker } from "@/lib/repository";
 import { notFound } from "next/navigation";
@@ -25,10 +26,12 @@ export default async function CompanyPage({ params }: { params: Promise<{ ticker
           <Link className="button" href="/">
             Feed
           </Link>
-          <button className="button primary" type="button">
-            <Icons.Star size={15} />
-            {company.watchlistState ? "Watching" : "Watch"}
-          </button>
+          <WatchButton
+            companyId={company.id}
+            initialWatching={company.watchlistState}
+            isAuthenticated={Boolean(user)}
+            redirectTo={`/companies/${ticker}`}
+          />
         </Topbar>
 
         <section className="content">

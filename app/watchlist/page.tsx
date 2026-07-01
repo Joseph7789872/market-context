@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AlertToggles } from "@/components/alert-toggles";
 import { AppShell } from "@/components/app-shell";
 import { AuthStatus } from "@/components/auth-status";
 import { Icons } from "@/components/icons";
@@ -50,25 +51,12 @@ export default async function WatchlistPage() {
                       </div>
                       <h2>{company.name}</h2>
                     </div>
-                    <span className="pill confirmed">
+                    <span className={`pill ${Object.values(entry.alertPreferences).some(Boolean) ? "confirmed" : "speculative"}`}>
                       <Icons.Bell size={14} />
-                      alerts on
+                      {Object.values(entry.alertPreferences).some(Boolean) ? "alerts on" : "alerts off"}
                     </span>
                   </div>
-                  <div className="reaction-grid">
-                    <div className="reaction">
-                      <span>Filings</span>
-                      <strong>{entry.alertPreferences.filings ? "On" : "Off"}</strong>
-                    </div>
-                    <div className="reaction">
-                      <span>Earnings</span>
-                      <strong>{entry.alertPreferences.earnings ? "On" : "Off"}</strong>
-                    </div>
-                    <div className="reaction">
-                      <span>X Context</span>
-                      <strong>{entry.alertPreferences.xContext ? "On" : "Off"}</strong>
-                    </div>
-                  </div>
+                  <AlertToggles companyId={entry.companyId} initialPreferences={entry.alertPreferences} />
                   <Link className="button" href={`/companies/${company.ticker ?? company.name}`}>
                     Open ticker
                   </Link>

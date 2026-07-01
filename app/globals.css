@@ -307,6 +307,17 @@ select {
   padding: 10px;
 }
 
+button.reaction {
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.reaction:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .reaction span {
   display: block;
   color: var(--muted);

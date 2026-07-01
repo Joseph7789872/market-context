@@ -210,6 +210,27 @@ export async function removeFromWatchlist(userId: string, companyId: string): Pr
   }
 }
 
+export async function updateAlertPreferences(
+  userId: string,
+  companyId: string,
+  alertPreferences: UserWatchlist["alertPreferences"]
+): Promise<UserWatchlist | null> {
+  try {
+    const entry = await prisma.userWatchlist.update({
+      where: { userId_companyId: { userId, companyId } },
+      data: { alertPreferences }
+    });
+
+    return {
+      userId: entry.userId,
+      companyId: entry.companyId,
+      alertPreferences: entry.alertPreferences as UserWatchlist["alertPreferences"]
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function getCompanyById(companyId: string) {
   return prisma.company.findUnique({ where: { id: companyId } });
 }
