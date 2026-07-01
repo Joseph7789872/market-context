@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Company {
+  id          String        @id @default(cuid())
+  name        String
+  ticker      String?
+  exchange    String?
+  aliases     String[]
+  isPublic    Boolean       @default(true)
+  sector      String
+  executives  String[]
+  events      MarketEvent[]
+  watchlists  UserWatchlist[]
+
+  @@index([ticker])
+}
+
+model MarketEvent {
+  id              String           @id @default(cuid())
+  companyId       String
+  eventType       String
+  headline        String
+  summary         String
+  sourceUrl       String
+  sourceName      String
+  confirmedStatus String
+  publishedAt     DateTime
+  detectedAt      DateTime
+  company         Company          @relation(fields: [companyId], references: [id])
+  reaction        MarketReaction?
+  xMatches        EventXMatch[]
+
+  @@unique([companyId, headline])
+  @@index([publishedAt])
+  @@index([eventType, confirmedStatus])
+}
+
+model MarketReaction {
+  eventId       String      @id
+  priceBefore   Decimal?
+  priceAfter    Decimal?
+  percentChange Decimal
+  volumeChange  Decimal
+  timeWindow    String
+  sparkline     Decimal[]
+  event         MarketEvent @relation(fields: [eventId], references: [id])
+}
+
+model XPost {
+  id             String        @id @default(cuid())
+  xPostId        String        @unique
+  authorHandle   String
+  authorName     String
+  text           String
+  url            String
+  postedAt       DateTime
+  engagement     Int
+  verifiedStatus Boolean
+  authorCluster  String
+  eventMatches   EventXMatch[]
+
+  @@index([postedAt])
+  @@index([authorHandle])
+}
+
+model EventXMatch {
+  eventId          String
+  xPostId          String
+  relevanceScore   Decimal
+  credibilityScore Decimal
+  sentiment        String
+  stance           String
+  matchReason      String
+  event            MarketEvent @relation(fields: [eventId], references: [id])
+  post             XPost       @relation(fields: [xPostId], references: [id])
+
+  @@id([eventId, xPostId])
+  @@index([sentiment])
+}
+
+model UserWatchlist {
+  id               String  @id @default(cuid())
+  userId           String
+  companyId        String
+  alertPreferences Json
+  company          Company @relation(fields: [companyId], references: [id])
+
+  @@unique([userId, companyId])
+}
