@@ -147,6 +147,14 @@ export async function getCompanyByTicker(ticker: string, userId?: string | null)
   const { events } = await getEvents({ limit: 50 });
   const companyEvents = events.filter((event) => event.company.id === company.id);
 
+  const sentimentBreakdown = sentimentKeys.reduce(
+    (acc, key) => {
+      acc[key] = companyEvents.reduce((sum, event) => sum + event.sentimentBreakdown[key], 0);
+      return acc;
+    },
+    {} as Record<Sentiment, number>
+  );
+
   const watchlistState = userId
     ? Boolean(
         await prisma.userWatchlist.findUnique({
@@ -165,11 +173,7 @@ export async function getCompanyByTicker(ticker: string, userId?: string | null)
     sector: company.sector,
     executives: company.executives,
     events: companyEvents,
-    sentimentTrend: [
-      { label: "48h", bullish: 38, bearish: 22, skeptical: 18 },
-      { label: "24h", bullish: 42, bearish: 25, skeptical: 14 },
-      { label: "Now", bullish: 54, bearish: 20, skeptical: 11 }
-    ],
+    sentimentBreakdown,
     watchlistState
   };
 }

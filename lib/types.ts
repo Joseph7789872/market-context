@@ -110,6 +110,6 @@ export type EventCard = MarketEvent & {
 
 export type CompanyProfile = Company & {
   events: EventCard[];
-  sentimentTrend: Array<{ label: string; bullish: number; bearish: number; skeptical: number }>;
+  sentimentBreakdown: Record<Sentiment, number>;
   watchlistState: boolean;
 };

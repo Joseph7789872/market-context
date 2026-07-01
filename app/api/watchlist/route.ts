@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { addToWatchlist, getCompanyById, getWatchlist } from "@/lib/repository";
+import { isNonEmptyString } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
 
@@ -19,9 +20,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = (await request.json().catch(() => null)) as { companyId?: string } | null;
-  if (!body?.companyId) {
-    return NextResponse.json({ error: "companyId is required" }, { status: 400 });
+  const body = (await request.json().catch(() => null)) as { companyId?: unknown } | null;
+  if (!isNonEmptyString(body?.companyId)) {
+    return NextResponse.json({ error: "companyId must be a non-empty string" }, { status: 400 });
   }
 
   const company = await getCompanyById(body.companyId);

@@ -61,13 +61,11 @@ export default async function CompanyPage({ params }: { params: Promise<{ ticker
               ))}
             </div>
             <aside className="side-panel">
-              <h3>Sentiment Trend</h3>
-              {company.sentimentTrend.map((point) => (
-                <div className="sentiment-row" key={point.label}>
-                  <span>{point.label}</span>
-                  <strong>
-                    {point.bullish}/{point.bearish}/{point.skeptical}
-                  </strong>
+              <h3>Sentiment Mix</h3>
+              {Object.entries(company.sentimentBreakdown).map(([sentiment, count]) => (
+                <div className="sentiment-row" key={sentiment}>
+                  <span>{sentiment}</span>
+                  <strong>{count}</strong>
                 </div>
               ))}
               <h3>Tracked Names</h3>
